@@ -24,7 +24,7 @@ idf_component_register(SRC_DIRS ${TRS_IO}/libsmb2/lib
                                     ${TRS_IO}/trs-fs/include
                                     ${TRS_IO}/tcpip/include
                        EMBED_TXTFILES ${TRS_IO}/trs-io/index.html
-                                      ${TRS_IO}/trs-io/printer.html
+                                      ${TRS_IO}/trs-io/trs_virtual_interface.html
                                       ${TRS_IO}/trs-io/AnotherMansTreasureMIII64C.ttf
                        EMBED_FILES ${TRS_IO}/retrostore/loader_basic.cmd
                                    ${TRS_IO}/retrostore/loader_cmd.bin
