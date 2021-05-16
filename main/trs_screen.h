@@ -14,10 +14,12 @@
 #define MODE_GRAFYX     (1 << 6)
 #define MODE_TEXT       (MODE_TEXT_64x16 | MODE_TEXT_80x24)
 
+class TrsVirtualInterface;
+
 class ScreenBuffer {
 private:
   static uint8_t currentMonitorMode;
-  
+
   byte*         screenBuffer;
   uint8_t       width;
   uint8_t       height;
@@ -52,12 +54,14 @@ public:
 class TRSScreen {
 private:
   ScreenBuffer* top;
+  TrsVirtualInterface* vi;
 
 public:
   TRSScreen();
   void init();
   void push(ScreenBuffer* screenBuffer);
   void pop();
+  void onBufferUpdated();
   void setMode(uint8_t mode);
   uint8_t getMode();
   uint8_t getWidth();
@@ -71,6 +75,7 @@ public:
   void clear();
   void refresh();
   void screenshot();
+  void update(uint8_t* from, uint8_t* to);
 };
 
 extern TRSScreen trs_screen;

@@ -12,6 +12,7 @@
 #include "config.h"
 #include "settings.h"
 #include "grafyx.h"
+#include "trs_virtual_interface.h"
 
 
 static uint8_t modeimage = 8;
@@ -101,8 +102,7 @@ void z80_out(uint8_t address, uint8_t data, tstate_t z80_state_t_count)
     case 0xFA:
     case 0xFB:
       {
-        char buf[2] = {data, 0};
-        trs_printer_write(buf);
+        TrsVirtualInterface::instance()->onPrinterWrite(data);
         return;
       }
     case 0xff:
@@ -180,7 +180,7 @@ uint8_t z80_in(uint8_t address, tstate_t z80_state_t_count)
     case 0xF9:
     case 0xFA:
     case 0xFB:
-      return trs_printer_read();
+      return TrsVirtualInterface::instance()->printerRead();
     case 0xff:
       return (modeimage & 0x7e) | trs_cassette_in(z80_state_t_count);
   }
