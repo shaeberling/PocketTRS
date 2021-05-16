@@ -18,11 +18,13 @@
 #include "freertos/task.h"
 
 #include "trs-io.h"
+#include "trs_virtual_interface.h"
 #include "ntp_sync.h"
 
 
 fabgl::PS2Controller  PS2Controller;
 
+fabgl::Keyboard* keyboard_ = NULL;
 
 void setup() {
 #if 1
@@ -43,6 +45,8 @@ void setup() {
   vTaskDelay(5000 / portTICK_PERIOD_MS);
   //settingsCalibration.setScreenOffset();
   PS2Controller.begin(PS2Preset::KeyboardPort0, KbdMode::CreateVirtualKeysQueue);
+  keyboard_ = PS2Controller.keyboard();
+  TrsVirtualInterface::instance()->init(keyboard_);
 
   z80_reset(0);
 
@@ -54,21 +58,19 @@ void setup() {
 
 void loop() {
   static fabgl::VirtualKey lastvk = fabgl::VK_NONE;
-  auto keyboard = PS2Controller.keyboard();
-
   z80_run();
 
   if (is_button_short_press()) {
     z80_reset();
   }
 
-  if (keyboard == nullptr || !keyboard->isKeyboardAvailable()) {
+  if (keyboard_ == nullptr) {
     return;
   }
-  if (keyboard->virtualKeyAvailable()) {
+  if (keyboard_->virtualKeyAvailable()) {
     bool down;
-    auto vk = keyboard->getNextVirtualKey(&down);
-    //printf("VirtualKey = %s\n", keyboard->virtualKeyToString(vk));
+    auto vk = keyboard_->getNextVirtualKey(&down);
+    //printf("VirtualKey = %s\n", keyboard_->virtualKeyToString(vk));
     if (down && vk == fabgl::VK_F3 && trs_screen.isTextMode()) {
       configure_pocket_trs();
     } else if (down && vk == fabgl::VK_F9) {
