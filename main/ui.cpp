@@ -1,5 +1,6 @@
-
 #include "ui.h"
+
+#include "esp_log.h"
 #include "calibrate.h"
 #include "storage.h"
 #include "trs_screen.h"
@@ -29,13 +30,11 @@ static menu_item_t main_menu_items[] = {
 
 MENU(main_menu, "PocketTRS");
 
-static ScreenBuffer* screenBuffer;
-
 extern fabgl::PS2Controller PS2Controller;
 
 static void screen_update(uint8_t* from, uint8_t* to)
 {
-  screenBuffer->update(from, to);
+  trs_screen.update(from, to);
 }
 
 static char get_next_key()
@@ -47,7 +46,7 @@ static char get_next_key()
     if (!keyboard->virtualKeyAvailable()) {
       continue;
     }
-  
+
     bool down;
     auto vk = keyboard->getNextVirtualKey(&down);
     if (!down) {
@@ -84,19 +83,19 @@ void configure_pocket_trs()
   bool exit = false;
   uint8_t mode = trs_screen.getMode();
 
-  screenBuffer = new ScreenBuffer(mode);
-  trs_screen.push(screenBuffer);
-  screenBuffer->copyBufferFrom(screenBuffer->getNext());
-
   ScreenBuffer* backgroundBuffer = new ScreenBuffer(mode);
   trs_screen.push(backgroundBuffer);
+
+  ScreenBuffer* screenBuffer = new ScreenBuffer(mode);
+  trs_screen.push(screenBuffer);
+  screenBuffer->copyBufferFrom(backgroundBuffer->getNext());
 
   set_screen(screenBuffer->getBuffer(), backgroundBuffer->getBuffer(),
 	     screenBuffer->getWidth(), screenBuffer->getHeight());
 
   set_screen_callback(screen_update);
   set_keyboard_callback(get_next_key);
-  
+
   while (!exit) {
     uint8_t action = menu(&main_menu, show_from_left, true);
     switch (action) {
