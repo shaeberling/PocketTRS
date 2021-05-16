@@ -1,5 +1,10 @@
 
-# PocketTRS
+# Fork of PocketTRS
+
+**For original repo, please head over to https://github.com/apuder/PocketTRS**
+
+This repo here is for adding features that might or might not make there way into the original repo eventually.
+
 
 PocketTRS uses a modern microcontroller to emulate a TRS-80 personal computer. It can be connected to any compatible VGA monitor and PS/2 keyboard. PocketTRS has <a href="https://github.com/apuder/TRS-IO">TRS-IO</a> embedded for full FreHD support. PocketTRS offers the following features:
 
