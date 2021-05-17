@@ -126,7 +126,7 @@ void configure_pocket_trs()
 
   // Copy original screen content of the TRS emulation
   // to the background buffer
-  backgroundBuffer->copyBufferFrom(screenBuffer->getNext());
+  backgroundBuffer->copyBufferFrom(backgroundBuffer->getNext());
   screen_show(true);
   trs_screen.pop();
   trs_screen.pop();
