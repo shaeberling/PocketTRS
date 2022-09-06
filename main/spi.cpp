@@ -234,7 +234,7 @@ void init_spi()
     ESP_LOGE("SPI", "Failed to initialize bus");
   }
 
-#ifndef CONFIG_POCKET_TRS_TTGO_VGA32_SUPPORT
+#if !defined(CONFIG_POCKET_TRS_TTGO_VGA32_SUPPORT) || !defined(CONFIG_POCKET_TRS_LILYGO_EPAPER_SUPPORT)
   // Configure SPI device for MCP23S17 and MCP23S08
   spi_mcp23x.address_bits = 0;
   spi_mcp23x.command_bits = 0;

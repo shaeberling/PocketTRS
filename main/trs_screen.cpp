@@ -197,7 +197,7 @@ void ScreenBuffer::drawChar(ushort pos, byte character)
   if (pos >= screen_chars) {
     return;
   }
-  
+
   if (isExpandedMode() && (pos & 1) != 0) {
     return;
   }
@@ -238,6 +238,10 @@ TRSScreen::TRSScreen()
 
 void TRSScreen::init()
 {
+#ifdef CONFIG_POCKET_TRS_LILYGO_EPAPER_SUPPORT
+  return;
+#endif
+
 #ifdef CONFIG_POCKET_TRS_TTGO_VGA32_SUPPORT
   DisplayController.begin(GPIO_NUM_22, GPIO_NUM_21, GPIO_NUM_19, GPIO_NUM_18, GPIO_NUM_5, GPIO_NUM_4, GPIO_NUM_23, GPIO_NUM_15);
 #else

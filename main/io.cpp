@@ -257,7 +257,7 @@ void SettingsTrsIO::init()
 
 bool SettingsTrsIO::isEnabled()
 {
-#ifdef CONFIG_POCKET_TRS_TTGO_VGA32_SUPPORT
+#if defined(CONFIG_POCKET_TRS_TTGO_VGA32_SUPPORT) || defined(CONFIG_POCKET_TRS_LILYGO_EPAPER_SUPPORT)
   return true;
 #else
   return use_trs_io;

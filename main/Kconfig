@@ -17,4 +17,11 @@ menu "PocketTRS"
         for the TTGO VGA32 v1.4 board. This will disable certain
         functions (e.g., support for the 50 pin expansion interface,
         cassette input, etc)
+    config POCKET_TRS_LILYGO_EPAPER_SUPPORT
+        bool "Add support for the LilyGo epaper board"
+        help
+        When selecting this option, PocketTRS will be configured
+        for the LilyGo epaper board. This will disable certain
+        functions (e.g., support for the 50 pin expansion interface,
+        cassette input, etc) and add others (e.g. driving the screen)
 endmenu

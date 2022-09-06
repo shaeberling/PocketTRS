@@ -37,7 +37,7 @@ void configure()
   init_form_begin(configuration_form);
   init_form_header("GENERAL:");
   init_form_checkbox("Show splash screen", &show_splash_screen);
-#ifndef CONFIG_POCKET_TRS_TTGO_VGA32_SUPPORT
+#if !defined(CONFIG_POCKET_TRS_TTGO_VGA32_SUPPORT) || !defined(CONFIG_POCKET_TRS_LILYGO_EPAPER_SUPPORT)
   init_form_checkbox("Enable TRS-IO", &enable_trs_io);
 #endif
   form_item_t* rom = init_form_select("ROM", &rom_type, rom_items);
@@ -64,7 +64,7 @@ void configure()
   settingsScreen.setScreenColor((screen_color_t) screen_color);
   settingsSplashScreen.hideSplashScreen(!show_splash_screen);
   settingsROM.setROMType((rom_type_t) rom_type);
-#ifndef CONFIG_POCKET_TRS_TTGO_VGA32_SUPPORT
+#if !defined(CONFIG_POCKET_TRS_TTGO_VGA32_SUPPORT) || !defined(CONFIG_POCKET_TRS_LILYGO_EPAPER_SUPPORT)
   settingsTrsIO.setEnabled(enable_trs_io);
 #endif
 
