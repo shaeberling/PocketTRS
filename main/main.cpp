@@ -36,7 +36,7 @@ void setup() {
   init_trs_io();
   init_storage();
   init_io();
-  init_i2s();
+  // init_i2s();
   trs_screen.init();
   init_settings();
   show_splash();

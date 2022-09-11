@@ -9,4 +9,5 @@ idf_component_register(SRCS ${app_sources}
                                 trs-lib
                                 freertos
                                 nvs_flash
-                                FabGL)
+                                FabGL
+                                lilygo-epd47)

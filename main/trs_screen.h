@@ -17,7 +17,7 @@
 class ScreenBuffer {
 private:
   static uint8_t currentMonitorMode;
-  
+
   byte*         screenBuffer;
   uint8_t       width;
   uint8_t       height;
@@ -52,6 +52,7 @@ public:
 class TRSScreen {
 private:
   ScreenBuffer* top;
+  bool epaper_initialized;
 
 public:
   TRSScreen();

@@ -1,7 +1,7 @@
 
 #pragma once
 
-//#define DISABLE_IO 1
+#define DISABLE_IO 1
 
 // SPI
 #ifdef CONFIG_POCKET_TRS_TTGO_VGA32_SUPPORT

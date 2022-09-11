@@ -8,6 +8,13 @@
 #include "wifi.h"
 #include "settings.h"
 
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "esp_log.h"
+
+#include <epd_driver.h>
+#include "firasans.h"
+
 
 #define MAX_TRS_SCREEN_WIDTH 80
 #define MAX_TRS_SCREEN_HEIGHT 24
@@ -21,6 +28,8 @@
 #include "font/font_m3"
 #include "font/font_m4"
 
+static const char* TAG = "trs_screen";
+
 
 //----------------------------------------------------------------
 
@@ -28,6 +37,10 @@ fabgl::VGA2Controller DisplayController;
 fabgl::Canvas         Canvas(&DisplayController);
 
 uint8_t ScreenBuffer::currentMonitorMode = 0;
+
+void delay(int ms) {
+  vTaskDelay(ms / portTICK_PERIOD_MS);
+}
 
 ScreenBuffer::ScreenBuffer(uint8_t mode)
 {
@@ -218,6 +231,12 @@ void ScreenBuffer::drawChar(ushort pos, byte character)
   }
   Canvas.drawGlyph(pos_x, pos_y, char_width, char_height,
     font, character);
+
+  epd_poweron();
+  char *string1 = "X\n";
+  writeln((GFXfont *)&FiraSans, string1, &pos_x, &pos_y, NULL);
+  delay(500);
+  epd_poweroff();
 }
 
 bool ScreenBuffer::getChar(ushort pos, byte& character)
@@ -234,14 +253,26 @@ bool ScreenBuffer::getChar(ushort pos, byte& character)
 TRSScreen::TRSScreen()
 {
   top = nullptr;
+  epaper_initialized = false;
 }
 
 void TRSScreen::init()
 {
+  ESP_LOGI(TAG, "TRSScreen::init() START");
 #ifdef CONFIG_POCKET_TRS_LILYGO_EPAPER_SUPPORT
+  ESP_LOGI(TAG, "TRSScreen::init() Activating epaper");
+  // epd_init();
+  // epd_poweron();
+  // epd_clear();
+  // int cursor_x = 200;
+  // int cursor_y = 250;
+  // char *string1 = "Pocket-TRS here 😀 \n";
+  // writeln((GFXfont *)&FiraSans, string1, &cursor_x, &cursor_y, NULL);
+  // delay(500);
+  // epd_poweroff();
+  ESP_LOGI(TAG, "TRSScreen::init() ePaper initialized");
   return;
 #endif
-
 #ifdef CONFIG_POCKET_TRS_TTGO_VGA32_SUPPORT
   DisplayController.begin(GPIO_NUM_22, GPIO_NUM_21, GPIO_NUM_19, GPIO_NUM_18, GPIO_NUM_5, GPIO_NUM_4, GPIO_NUM_23, GPIO_NUM_15);
 #else
@@ -320,6 +351,17 @@ bool TRSScreen::isTextMode()
 void TRSScreen::drawChar(ushort pos, byte character)
 {
   assert(top != nullptr);
+
+  // Need to do this on the right thread. init() is called on a different one.
+  if (!epaper_initialized) {
+    epd_init();
+    epd_poweron();
+    epd_clear();
+    epaper_initialized = true;
+    delay(500);
+    epd_poweroff();
+  }
+
   //if (isTextMode()) {
     top->drawChar(pos, character);
   //}
@@ -384,6 +426,10 @@ screen_color_t SettingsScreen::getScreenColor() {
 
 void SettingsScreen::setScreenColor(screen_color_t color) {
   nvs_set_u8(KEY_COLOR, color);
+
+#ifdef CONFIG_POCKET_TRS_LILYGO_EPAPER_SUPPORT
+  return;
+#endif
 
 #ifdef CONFIG_POCKET_TRS_TTGO_VGA32_SUPPORT
   switch(color) {
